@@ -185,7 +185,8 @@ def export_book(filename, book_version):
             try:
                 tree = parse_html_string(cont.encode('utf-8'))
             except Exception as e:
-                logger.error('[EXPORT] %s' % e)
+                logger.debug('[EXPORT] %s' % e)
+                print e
 
             for elem in tree.iter():
                 if elem.tag == 'a':
