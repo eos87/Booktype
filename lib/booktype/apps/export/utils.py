@@ -155,6 +155,10 @@ def set_booktype_metada(epub_book, book):
     return epub_book
 
 
+import logging
+logger = logging.getLogger("booktype.export.utils")
+
+
 def export_book(filename, book_version):
     book = book_version.book
     epub_book = ExportEpubBook()
@@ -171,9 +175,6 @@ def export_book(filename, book_version):
 
     hold_chapters_urls = [i.url_title for i in book_version.get_hold_chapters()]
 
-    import logging
-    logger = logging.getLogger("booktype.export.utils")
-
     for chapter in book_version.get_toc():
         if chapter.chapter:
             c1 = epub.EpubHtml(
@@ -181,7 +182,6 @@ def export_book(filename, book_version):
                 file_name='%s.xhtml' % (chapter.chapter.url_title, )
             )
             cont = chapter.chapter.content
-            logger.debug(cont)
 
             try:
                 tree = parse_html_string(cont.encode('utf-8'))
@@ -213,6 +213,8 @@ def export_book(filename, book_version):
                         embeded_images[src] = True
 
             c1.content = etree.tostring(tree, pretty_print=True, encoding='utf-8', xml_declaration=True)
+            logger.debug('[CONTENIDO]')
+            logger.debug(c1.content)
 
             epub_book.add_item(c1)
             spine.append(c1)
@@ -255,4 +257,15 @@ def export_book(filename, book_version):
     epub_book.add_item(epub.EpubNav())
 
     opts = {'plugins': [TidyPlugin(), standard.SyntaxPlugin()]}
-    epub.write_epub(filename, epub_book, opts)
+    my_write(filename, epub_book, opts)
+
+
+def my_write(name, book, options=None):
+    epuba = epub.EpubWriter(name, book, options)
+
+    epuba.process()
+
+    try:
+        epub.write()
+    except IOError as e:
+        logger.debug('LPMA alkjsda sd %s' % e)
