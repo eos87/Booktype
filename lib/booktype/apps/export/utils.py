@@ -165,7 +165,7 @@ def export_book(filename, book_version):
 
     # set metadata to the epub book
     epub_book = set_booktype_metada(epub_book, book)
-    epub_book.add_prefix('bkterms', 'http://booktype.org/')
+    # epub_book.add_prefix('bkterms', 'http://booktype.org/')
 
     toc = OrderedDict()
     spine = ['nav']
