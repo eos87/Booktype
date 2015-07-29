@@ -171,6 +171,9 @@ def export_book(filename, book_version):
 
     hold_chapters_urls = [i.url_title for i in book_version.get_hold_chapters()]
 
+    import logging
+    logger = logging.getLogger("booktype.export.utils")
+
     for chapter in book_version.get_toc():
         if chapter.chapter:
             c1 = epub.EpubHtml(
@@ -181,8 +184,8 @@ def export_book(filename, book_version):
 
             try:
                 tree = parse_html_string(cont.encode('utf-8'))
-            except:
-                pass
+            except Exception as e:
+                logger.error('[EXPORT] %s' % e)
 
             for elem in tree.iter():
                 if elem.tag == 'a':
