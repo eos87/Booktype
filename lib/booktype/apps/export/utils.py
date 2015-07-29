@@ -181,6 +181,7 @@ def export_book(filename, book_version):
                 file_name='%s.xhtml' % (chapter.chapter.url_title, )
             )
             cont = chapter.chapter.content
+            logger.debug(cont)
 
             try:
                 tree = parse_html_string(cont.encode('utf-8'))
@@ -238,7 +239,8 @@ def export_book(filename, book_version):
             f = open(attachment.attachment.name, "rb")
             blob = f.read()
             f.close()
-        except (IOError, OSError):
+        except (IOError, OSError) as e:
+            logger.debug('{OS} %s' % e)
             continue
         else:
             fn = os.path.basename(attachment.attachment.name.encode("utf-8"))
