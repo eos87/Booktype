@@ -42,6 +42,9 @@ try:
 except ImportError:
     import Image
 
+import logging
+logger = logging.getLogger("booktype.export.tidy")
+
 
 class TidyPlugin(BasePlugin):
     NAME = 'Tidy HTML'
@@ -67,6 +70,8 @@ class TidyPlugin(BasePlugin):
         from .tidy import tidy_cleanup
 
         (_, chapter.content) = tidy_cleanup(chapter.get_content(), **self.options)
+
+        logger.debug('[TIDY PLUGIN] %s' % chapter.content)
 
         return chapter.content
 
