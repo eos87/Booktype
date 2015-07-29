@@ -266,6 +266,6 @@ def my_write(name, book, options=None):
     epuba.process()
 
     try:
-        epub.write()
-    except IOError as e:
+        epuba.write()
+    except Exception as e:
         logger.debug('LPMA alkjsda sd %s' % e)
