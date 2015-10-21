@@ -54,7 +54,10 @@ class AssetFile(object):
 
 def download(src_url, dst_file):
     import urllib2
-    src = urllib2.urlopen(src_url)
+    from booktype.utils import misc
+
+    req = misc.FancyRequest(src_url)
+    src = urllib2.urlopen(req)
     try:
         with open(dst_file, "w") as dst:
             for chunk in src:

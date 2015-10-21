@@ -56,7 +56,7 @@ def export_book(input_file, filename):
 
     This function reads content of the book in Booki.zip file, creates new
     book in EPUB format and converts entire content into it. There are some
-    things which are different in new EPUB format. One of them is how links 
+    things which are different in new EPUB format. One of them is how links
     and interlinks are handled.
     """
 
@@ -159,10 +159,12 @@ def export_book(input_file, filename):
 
 
 def fetch_url(url, data, method='GET'):
+    from booktype.utils import misc
+
     if method.lower() == 'get':
         url = url + '?' + urllib.urlencode(data)
 
-        req = urllib2.Request(url)
+        req = misc.FancyRequest(url)
     else:
         try:
             data_json = json.dumps(data)
@@ -170,7 +172,7 @@ def fetch_url(url, data, method='GET'):
             logger.exception('Could not serialize to JSON.')
             return None
 
-        req = urllib2.Request(url, data_json)
+        req = misc.FancyRequest(url, data_json)
 
     req.add_header('Content-Type', 'application/json')
     req.add_header('Content-Length', len(data_json))
@@ -207,6 +209,8 @@ def download_bookizip(base_path, url_path):
 
 
 def send_request(book_url, conf, request):
+    from booktype.utils import misc
+
     data = {
         "assets": {
             "input.epub": book_url
@@ -286,7 +290,7 @@ def send_request(book_url, conf, request):
             data['outputs'][conf['format']]['config']['cover_image'] = 'epub_cover_image'
         elif conf['format'] == 'mobi':
             data['assets']['mobi_cover_image'] = request.POST.get('cover_url', '')
-            data['outputs'][conf['format']]['config']['cover_image'] = 'mobi_cover_image'        
+            data['outputs'][conf['format']]['config']['cover_image'] = 'mobi_cover_image'
 
     output_results = {}
 
@@ -304,8 +308,8 @@ def send_request(book_url, conf, request):
             break
 
         try:
-            response = urllib2.urlopen(
-                '{}/_convert/{}'.format(settings.CONVERT_URL, task_id)).read()
+            req = misc.FancyRequest('{}/_convert/{}'.format(settings.CONVERT_URL, task_id))
+            response = urllib2.urlopen(req).read()
         except (urllib2.HTTPError, urllib2.URLError, httplib.HTTPException):
             pass
         except Exception:
@@ -358,7 +362,7 @@ class ConvertView(RestrictExport, View):
     """Convert view for faking Objavi call.
 
     Booktype 1.6 will call this URL thinking it is talking with Objavi service. This view will
-    parse all the arguments and then send request to the new Booktype 2.0 convert scripts. 
+    parse all the arguments and then send request to the new Booktype 2.0 convert scripts.
 
     It will also download book from Booktype 1.6 system in Booki.zip file. File will be saved
     into temporary file. During our call to Booktype 2.0 system we will use unique id for

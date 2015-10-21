@@ -16,6 +16,7 @@
 
 import os
 import urllib
+import urllib2
 import config
 import urlparse
 import tempfile
@@ -576,3 +577,14 @@ def is_valid_email(email):
         return False
 
     return False
+
+
+class FancyRequest(urllib2.Request):
+
+    def __init__(self, url, data=None, headers={}, origin_req_host=None, unverifiable=False):
+
+        urllib2.Request.__init__(self, url, data, headers, origin_req_host, unverifiable)
+        self.add_header(
+            "User-Agent",
+            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/534.30 (KHTML, like Gecko) Ubuntu/11.04 Chromium/12.0.742.112 Chrome/12.0.742.112 Safari/534.30" # noqa
+        )

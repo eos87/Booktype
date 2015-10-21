@@ -18,7 +18,7 @@ from booktype.utils import config
 from booktype.apps.export.models import BookExport, ExportFile
 from booktype.apps.export.utils import get_settings_as_dictionary
 from .utils import send_notification
-
+from booktype.utils.misc import FancyRequest
 
 logger = logging.getLogger('booktype')
 
@@ -27,7 +27,7 @@ def fetch_url(url, data, method='GET'):
     if method.lower() == 'get':
         url = url + '?' + urllib.urlencode(data)
 
-        req = urllib2.Request(url)
+        req = FancyRequest(url)
     else:
         try:
             data_json = json.dumps(data)
@@ -35,7 +35,7 @@ def fetch_url(url, data, method='GET'):
             logger.exception('Could not serialize to JSON.')
             return None
 
-        req = urllib2.Request(url, data_json)
+        req = FancyRequest(url, data_json)
 
     req.add_header('Content-Type', 'application/json')
     req.add_header('Content-Length', len(data_json))
@@ -170,8 +170,8 @@ def publish_book(*args, **kwargs):
             break
 
         try:
-            response = urllib2.urlopen(
-                '{}/_convert/{}'.format(settings.BOOKTYPE_URL, task_id)).read()
+            req = FancyRequest('{}/_convert/{}'.format(settings.BOOKTYPE_URL, task_id))
+            response = urllib2.urlopen(req).read()
         except (urllib2.HTTPError, urllib2.URLError, httplib.HTTPException):
             logger.error(
                 'Could not communicate with a server to fetch polling data.')
