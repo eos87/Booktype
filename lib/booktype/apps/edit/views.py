@@ -288,6 +288,10 @@ class EditBookPage(LoginRequiredMixin, views.SecurityMixin, TemplateView):
     redirect_unauthorized_user = True
     redirect_field_name = 'redirect'
 
+    def dispatch(self, request, *args, **kwargs):
+        resp = super(EditBookPage, self).dispatch(request, *args, **kwargs)
+        return resp
+
     def render_to_response(self, context, **response_kwargs):
         # Check for errors
         if context['book'] is None:
@@ -307,21 +311,25 @@ class EditBookPage(LoginRequiredMixin, views.SecurityMixin, TemplateView):
         return super(TemplateView, self).render_to_response(
             context, **response_kwargs)
 
+    def get(self, *args, **kwargs):
+        return super(EditBookPage, self).get(*args, **kwargs)
+
     def check_permissions(self, request, *args, **kwargs):
         if not self.security.can_edit():
             raise PermissionDenied
 
     def get_context_data(self, **kwargs):
-        context = super(TemplateView, self).get_context_data(**kwargs)
+        context = super(EditBookPage, self).get_context_data(**kwargs)
 
         try:
             book = models.Book.objects.get(url_title__iexact=kwargs['bookid'])
         except models.Book.DoesNotExist:
             return {'book': None, 'book_id': kwargs['bookid']}
 
+        print('lkasdkljasdja;sd', context)
         book_version = book.get_version(None)
-
         toc = get_toc_for_book(book_version)
+        print('pojqwepoiqpiwepoqiwepiqpweipoqiwepiqpewipqiepo')
 
         context['request'] = self.request
         context['book'] = book
@@ -336,6 +344,7 @@ class EditBookPage(LoginRequiredMixin, views.SecurityMixin, TemplateView):
             context['book_dir'] = 'ltr'
 
         context['chapters'] = toc
+
 
         # check if we should track changes for current user
         user_permissions = get_user_permissions(self.request.user, book)

@@ -41,15 +41,14 @@
       toolbar: {
         enabled: true,
         styles: {
-          'QUOTE': {
-            'type': 'custom',
-            'check': function ($elems) {
-              return $elems.filter('.quote').length > 0;
-            },
-            'create': function (range) {
-              Aloha.execCommand('FormatBlock', false, 'p');
-              $(range.startContainer).parent().addClass('quote');
-            }
+          'BLOCKQUOTE': {
+            'type': 'formatting'            
+            // 'create': function (range) {
+            //   // console.log('Create block');
+            //   // return Aloha.execCommand('FormatBlock', false, 'blockquote');
+            //   return true;
+            //   // $(range.startContainer).parent().addClass('quote');
+            // }
           }
         }
       },

@@ -69,6 +69,8 @@ def get_toc_for_book(version):
 
             state = "normal"
             current_editor = chap.chapter.get_current_editor_username()
+            print('LAJSDLJASDLK JALSKDJ ALDJALKDJS LJALDKSJ LDJ ALKJDLSKJALDSJ LKAJDLKAS', chap)
+            
             if current_editor:
                 state = "edit"
 

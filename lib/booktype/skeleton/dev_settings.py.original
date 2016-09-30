@@ -69,12 +69,6 @@ try:
 except ImportError:
     pass
 
-try:
-    import devserver
-    INSTALLED_APPS = ('devserver',) + INSTALLED_APPS
-except ImportError:
-    pass
-
 # LOGGING
 LOGGING = {
     'version': 1,
