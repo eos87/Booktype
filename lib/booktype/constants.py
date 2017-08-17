@@ -194,6 +194,20 @@ EPUB_ALLOWED_TAG_ATTRS = (
     ('ol', ('class', 'dir', 'id', 'lang', 'style', 'title', 'xml:lang')),
 )
 
+# indicates if ContentCleanUpPlugin should be used or not
+# this plugin is meant to remove all unnecessary and empty tags
+ENABLE_CONTENT_CLEANUP_ON_EXPORT = False
+
+# list of attributes that want to be removed from nodes in ContentCleanUpPlugin
+ATTRS_TO_REMOVE_ON_CLEANUP = ['style']
+
+# list of tags that are meant to be removed by the ContentCleanUpPlugin
+TAGS_TO_REMOVE_ON_CLEANUP = ['br']
+
+# list of tags that are supposed to be empty but are not remove in ContentCleanupPlugin
+ALLOWED_EMPTY_TAGS = ['hr']
+
+
 EXPORT_SETTINGS = {
     'mpdf': [
         {u'name': u'size', u'value': u'A4'}, {u'name': u'custom_width', u'value': u''},
